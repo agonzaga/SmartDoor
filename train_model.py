@@ -48,16 +48,17 @@ def prepare_training_data(folder_path):
             image_path = subdir_path + "/" + image
 
             # read image
-            img = cv2.imread(face_cascade, image_path)
+            img = cv2.imread(image_path)
 
-            detect_face_trim(img)
+            if img is None:
+                continue
 
             # display an image window to show the image
-            cv2.imshow("Training on image...", image)
+            cv2.imshow("Training on image...", img)
             cv2.waitKey(100)
 
             # detect face
-            face, rect = detect_face(image)
+            face, rect = detect_face_trim(face_cascade, img)
 
             if face is not None:
                 faces.append(face)
@@ -80,6 +81,7 @@ def main():
     # print total faces and labels
     print("Total faces: ", len(faces))
     print("Total labels: ", len(labels))
+    print(labels)
 
 if __name__ == '__main__':
     main()
