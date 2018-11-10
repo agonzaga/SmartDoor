@@ -1,17 +1,18 @@
 import sqlite3
 
-def create_table():
-    c.execute("CREATE TABLE photos (Name name)")
-
 def open_db():
     global conn
     global c
     conn = sqlite3.connect('photo_collection.db')
     c = conn.cursor()
 
-def insert():
+def create_table():
+    c.execute('''CREATE TABLE photos (Name label, Link path);''')
+
+def insert(file_name, data_path):
     # Insert a row of data (name, photo)
-    c.execute("INSERT INTO photos (Name) values ?")
+    c.execute('''INSERT INTO photos (Name, Link) VALUES (?,?)''', (file_name, data_path))
+    #c.execute('''INSERT INTO photos (Name, Link) VALUES ("hello", "no")''')
 
 def close_db():
     # Committing the changes
@@ -20,6 +21,9 @@ def close_db():
 
 def main():
     open_db()
+    # create_table()
+    insert("nameis", "path")
+    close_db()
 
 if __name__ == '__main__':
     main()
