@@ -1,4 +1,5 @@
 import sqlite3
+import os
 
 def open_db():
     global conn
@@ -22,8 +23,42 @@ def close_db():
 def main():
     open_db()
     # create_table()
-    insert("nameis", "path")
+    try:
+        create_table()
+    except:
+        pass
+    # insert("andre", "/sada")
+    get_db()
     close_db()
+
+# get dict of lists from db. {david: [image1, image2]}
+def get_db():
+    #connect database
+    db = sqlite3.connect(db_name)
+
+    cursor = db.cursor()
+
+    # SQL query in command
+    command = '''SELECT *
+        FROM Photos;'''
+
+    # execute command
+    cursor.execute(command)
+
+    mydict = {}
+
+    for row in cursor:
+        key = row[0]
+        image_path = row[1]
+        mydict[key] = image_path
+        if key in mydict:
+            mydict[key].append(image_path)
+        else:
+            mydict[key] = [image_path]
+
+    db.commit()
+    db.close()
+
 
 if __name__ == '__main__':
     main()
