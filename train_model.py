@@ -11,7 +11,7 @@ def detect_face_trim(f_cascade, img):
 
     # let's detect multiscale images(some images may be closer to camera than others)
     # result is a list of faces
-    faces = f_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5);
+    faces = f_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5);
 
     # if no faces are detected then return original img
     if (len(faces) == 0):
@@ -28,8 +28,7 @@ def detect_face_trim(f_cascade, img):
 def prepare_training_data(folder_path):
     dirs = os.listdir(folder_path)
 
-    faces = []
-    labels = []
+    trained_sets = {}
 
     casc_type = os.path.abspath('./data/lbpcascade_frontalface.xml')
     # casc_type = os.path.abspath('./data/haarcascade_frontalface_default.xml')
@@ -38,6 +37,7 @@ def prepare_training_data(folder_path):
 
     for dir in dirs:
         label = dir
+        trained_sets[label] = []
         subdir_path = folder_path + "/" + dir
 
         subdirs = os.listdir(subdir_path)
@@ -61,13 +61,12 @@ def prepare_training_data(folder_path):
             face, rect = detect_face_trim(face_cascade, img)
 
             if face is not None:
-                faces.append(face)
-                labels.append(label)
+                trained_sets[label].append(face)
     cv2.destroyAllWindows()
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
-    return faces, labels
+    return trained_sets
 
 
 
@@ -75,13 +74,11 @@ def main():
     folder_path = os.path.abspath('./training_sets')
 
     print("Preparing data...")
-    faces, labels = prepare_training_data(folder_path)
+    trained_set = prepare_training_data(folder_path)
     print("Data prepared")
 
-    # print total faces and labels
-    print("Total faces: ", len(faces))
-    print("Total labels: ", len(labels))
-    print(labels)
+    for label, faces in trained_set.items():
+        print('{0}: {1}'.format(label, len(faces)))
 
 if __name__ == '__main__':
     main()
