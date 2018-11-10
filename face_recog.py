@@ -4,7 +4,7 @@ import os
 import numpy
 
 
-def detect_faces(f_cascade, colored_img, scaleFactor=1.1):
+def detect_faces(f_cascade, colored_img, scaleFactor=1.2):
     # just making a copy of image passed, so that passed image is not changed
     img_copy = colored_img.copy()
 
@@ -22,16 +22,23 @@ def detect_faces(f_cascade, colored_img, scaleFactor=1.1):
 
 
 def main():
-    img = cv2.imread(sys.argv[1])
-    casctype = sys.argv[2]
-    scale = float(sys.argv[3])
+    # casc_type = os.path.abspath('./data/lbpcascade_frontalface.xml')
+    casc_type = os.path.abspath('./data/haarcascade_frontalface_default.xml')
 
-    face_cascade = cv2.CascadeClassifier(casctype)
+    print(casc_type)
+    vid = cv2.VideoCapture(0)
+    face_cascade = cv2.CascadeClassifier(casc_type)
 
-    image = detect_faces(face_cascade, img, scaleFactor=scale)
+    while True:
+        ret, frame = vid.read()
+        image = detect_faces(face_cascade, frame)
+        cv2.imshow("Faces found", image)
 
-    cv2.imshow("Faces found", image)
-    cv2.waitKey(0)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    vid.release()
+    cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     main()
