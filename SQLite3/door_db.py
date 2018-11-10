@@ -32,15 +32,14 @@ def main():
     close_db()
 
 # get dict of lists from db. {david: [image1, image2]}
-def get_db():
+def get_db(db_name):
     #connect database
     db = sqlite3.connect(db_name)
 
     cursor = db.cursor()
 
     # SQL query in command
-    command = '''SELECT *
-        FROM Photos;'''
+    command = '''SELECT * FROM Photos;'''
 
     # execute command
     cursor.execute(command)
