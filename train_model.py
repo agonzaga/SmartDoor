@@ -77,8 +77,8 @@ def prepare_training_data(face_cascade, folder_path):
 
 
 def recognizer(faces, labels):
-    # face_recognizer = cv2.face.createLBPHFaceRecognizer()
-    face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+    face_recognizer = cv2.face.createLBPHFaceRecognizer()
+    # face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 
     # or use EigenFaceRecognizer by replacing above line with
     # face_recognizer = cv2.face.EigenFaceRecognizer_create()
