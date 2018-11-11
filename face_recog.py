@@ -2,6 +2,7 @@ import cv2
 import sys
 import os
 import numpy
+import train_model
 
 
 def detect_faces(f_cascade, colored_img, scaleFactor=1.1):
@@ -26,13 +27,29 @@ def detect_faces(f_cascade, colored_img, scaleFactor=1.1):
 def main():
     casc_type = os.path.abspath('./data/lbpcascade_frontalface.xml')
     # casc_type = os.path.abspath('./data/haarcascade_frontalface_default.xml')
-
-    vid = cv2.VideoCapture(0)
     face_cascade = cv2.CascadeClassifier(casc_type)
 
+
+    # Training data
+    folder_path = os.path.abspath('./training_sets')
+
+    print("Preparing data...")
+    faces, labels = train_model.prepare_training_data(face_cascade, folder_path)
+    print("Data prepared")
+
+    # print total faces and labels
+    print("Total faces: ", len(faces))
+    print("Total labels: ", len(labels))
+    print(labels)
+
+    face_recog = train_model.recognizer(faces, labels)
+
+
+    vid = cv2.VideoCapture(0)
     while True:
         ret, frame = vid.read()
-        image, face = detect_face_trim(face_cascade, frame)
+        image = train_model.predict(face_cascade, frame, face_recog)
+
         if image is not None:
             cv2.imshow("Faces found", image)
 

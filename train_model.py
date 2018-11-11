@@ -25,16 +25,12 @@ def detect_face_trim(f_cascade, img):
     return gray[y:y + w, x:x + h], faces[0]
 
 
-def prepare_training_data(folder_path):
+def prepare_training_data(face_cascade, folder_path):
     dirs = os.listdir(folder_path)
 
     faces = []
     labels = []
 
-    casc_type = os.path.abspath('./data/lbpcascade_frontalface.xml')
-    # casc_type = os.path.abspath('./data/haarcascade_frontalface_default.xml')
-
-    face_cascade = cv2.CascadeClassifier(casc_type)
 
     for dir in dirs:
         label = dir
@@ -62,13 +58,61 @@ def prepare_training_data(folder_path):
 
             if face is not None:
                 faces.append(face)
-                labels.append(label)
+                # labels.append(label)
+                labels.append(1)
     cv2.destroyAllWindows()
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
     return faces, labels
 
+
+def recognizer(faces, labels):
+    face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+
+    # or use EigenFaceRecognizer by replacing above line with
+    # face_recognizer = cv2.face.createEigenFaceRecognizer()
+
+    # or use FisherFaceRecognizer by replacing above line with
+    # face_recognizer = cv2.face.createFisherFaceRecognizer()
+    print(labels)
+
+    # train our face recognizer of our training faces
+    face_recognizer.train(faces, numpy.array(labels))
+    return face_recognizer
+
+
+def predict(face_cascade, test_img, face_recognizer):
+    # according to given (x, y) coordinates and
+    # given width and heigh
+    def draw_rectangle(img, rect):
+        (x, y, w, h) = rect
+        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    # function to draw text on give image starting from
+    # passed (x, y) coordinates.
+    def draw_text(img, text, x, y):
+        cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+
+
+    # make a copy of the image as we don't want to change original image
+    img = test_img.copy()
+
+    # detect face from the image
+    face, rect = detect_face_trim(face_cascade, img)
+
+    # predict the image using our face recognizer
+    if face is None:
+        return img
+
+    label = face_recognizer.predict(face)
+
+    # draw a rectangle around face detected
+    draw_rectangle(img, rect)
+    # draw name of predicted person
+    draw_text(img, str(label), rect[0], rect[1] - 5)
+
+    return img
 
 
 def main():
@@ -82,6 +126,9 @@ def main():
     print("Total faces: ", len(faces))
     print("Total labels: ", len(labels))
     print(labels)
+
+    face_recog = recognizer(faces, labels)
+    #predict(test_img, face_recog)
 
 if __name__ == '__main__':
     main()
