@@ -11,7 +11,7 @@ def detect_face_trim(f_cascade, img):
 
     # let's detect multiscale images(some images may be closer to camera than others)
     # result is a list of faces
-    faces = f_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5);
+    faces = f_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5);
 
     # if no faces are detected then return original img
     if (len(faces) == 0):
@@ -37,6 +37,8 @@ def prepare_training_data(face_cascade, folder_path):
     for dir in dirs:
         label = dir
         subdir_path = folder_path + "/" + dir
+        if label == ".DS_Store":
+            continue
 
         subdirs = os.listdir(subdir_path)
 
@@ -51,12 +53,15 @@ def prepare_training_data(face_cascade, folder_path):
             if img is None:
                 continue
 
-            # display an image window to show the image
-            cv2.imshow("Training on image...", img)
-            cv2.waitKey(100)
-
             # detect face
             face, rect = detect_face_trim(face_cascade, img)
+            # display an image window to show the image
+
+            if face is not None:
+                cv2.imshow("Training on image...", face)
+                cv2.waitKey(100)
+
+
 
             if face is not None:
                 faces.append(face)
@@ -72,10 +77,11 @@ def prepare_training_data(face_cascade, folder_path):
 
 
 def recognizer(faces, labels):
-    face_recognizer = cv2.face.createLBPHFaceRecognizer()
+    # face_recognizer = cv2.face.createLBPHFaceRecognizer()
+    face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 
     # or use EigenFaceRecognizer by replacing above line with
-    # face_recognizer = cv2.face.createEigenFaceRecognizer()
+    # face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
     # or use FisherFaceRecognizer by replacing above line with
     # face_recognizer = cv2.face.createFisherFaceRecognizer()
@@ -88,7 +94,7 @@ def recognizer(faces, labels):
 
 def predict(face_cascade, test_img, face_recognizer, name_map):
     # according to given (x, y) coordinates and
-    # given width and heigh
+    # given width and height
     def draw_rectangle(img, rect):
         (x, y, w, h) = rect
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -110,7 +116,7 @@ def predict(face_cascade, test_img, face_recognizer, name_map):
         return img
 
     label, conf = face_recognizer.predict(face)
-
+    print(conf)
     # draw a rectangle around face detected
     draw_rectangle(img, rect)
     # draw name of predicted person
@@ -136,3 +142,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
