@@ -30,7 +30,9 @@ def prepare_training_data(face_cascade, folder_path):
 
     faces = []
     labels = []
+    names = {}
 
+    count = 0
 
     for dir in dirs:
         label = dir
@@ -58,17 +60,19 @@ def prepare_training_data(face_cascade, folder_path):
 
             if face is not None:
                 faces.append(face)
-                # labels.append(label)
-                labels.append(1)
+                labels.append(count)
+                names[count] = label
+        count += 1
+
     cv2.destroyAllWindows()
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
-    return faces, labels
+    return faces, labels, names
 
 
 def recognizer(faces, labels):
-    face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+    face_recognizer = cv2.face.createLBPHFaceRecognizer()
 
     # or use EigenFaceRecognizer by replacing above line with
     # face_recognizer = cv2.face.createEigenFaceRecognizer()
@@ -82,7 +86,7 @@ def recognizer(faces, labels):
     return face_recognizer
 
 
-def predict(face_cascade, test_img, face_recognizer):
+def predict(face_cascade, test_img, face_recognizer, name_map):
     # according to given (x, y) coordinates and
     # given width and heigh
     def draw_rectangle(img, rect):
@@ -105,12 +109,12 @@ def predict(face_cascade, test_img, face_recognizer):
     if face is None:
         return img
 
-    label = face_recognizer.predict(face)
+    label, conf = face_recognizer.predict(face)
 
     # draw a rectangle around face detected
     draw_rectangle(img, rect)
     # draw name of predicted person
-    draw_text(img, str(label), rect[0], rect[1] - 5)
+    draw_text(img, name_map[label], rect[0], rect[1] - 5)
 
     return img
 

@@ -34,13 +34,13 @@ def main():
     folder_path = os.path.abspath('./training_sets')
 
     print("Preparing data...")
-    faces, labels = train_model.prepare_training_data(face_cascade, folder_path)
+    faces, labels, names = train_model.prepare_training_data(face_cascade, folder_path)
     print("Data prepared")
 
     # print total faces and labels
     print("Total faces: ", len(faces))
     print("Total labels: ", len(labels))
-    print(labels)
+    print(names)
 
     face_recog = train_model.recognizer(faces, labels)
 
@@ -48,7 +48,7 @@ def main():
     vid = cv2.VideoCapture(0)
     while True:
         ret, frame = vid.read()
-        image = train_model.predict(face_cascade, frame, face_recog)
+        image = train_model.predict(face_cascade, frame, face_recog, names)
 
         if image is not None:
             cv2.imshow("Faces found", image)
