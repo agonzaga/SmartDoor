@@ -28,14 +28,19 @@ def detect_face_trim(f_cascade, img):
 def prepare_training_data(face_cascade, folder_path):
     dirs = os.listdir(folder_path)
 
+<<<<<<< HEAD
+    trained_sets = {}
+=======
     faces = []
     labels = []
     names = {}
+>>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
 
     count = 0
 
     for dir in dirs:
         label = dir
+        trained_sets[label] = []
         subdir_path = folder_path + "/" + dir
         if label == ".DS_Store":
             continue
@@ -58,6 +63,9 @@ def prepare_training_data(face_cascade, folder_path):
             # display an image window to show the image
 
             if face is not None:
+<<<<<<< HEAD
+                trained_sets[label].append(face)
+=======
                 cv2.imshow("Training on image...", face)
                 cv2.waitKey(100)
 
@@ -69,10 +77,14 @@ def prepare_training_data(face_cascade, folder_path):
                 names[count] = label
         count += 1
 
+>>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
     cv2.destroyAllWindows()
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
+<<<<<<< HEAD
+    return trained_sets
+=======
     return faces, labels, names
 
 
@@ -109,6 +121,7 @@ def predict(face_cascade, test_img, face_recognizer, name_map):
 
     # make a copy of the image as we don't want to change original image
     img = test_img.copy()
+>>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
 
     # detect face from the image
     face, rect = detect_face_trim(face_cascade, img)
@@ -131,13 +144,11 @@ def main():
     folder_path = os.path.abspath('./training_sets')
 
     print("Preparing data...")
-    faces, labels = prepare_training_data(folder_path)
+    trained_set = prepare_training_data(folder_path)
     print("Data prepared")
 
-    # print total faces and labels
-    print("Total faces: ", len(faces))
-    print("Total labels: ", len(labels))
-    print(labels)
+    for label, faces in trained_set.items():
+        print('{0}: {1}'.format(label, len(faces)))
 
     face_recog = recognizer(faces, labels)
     #predict(test_img, face_recog)
