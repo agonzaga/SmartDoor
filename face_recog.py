@@ -25,6 +25,17 @@ def detect_faces(f_cascade, colored_img, scaleFactor=1.1):
     return img_copy
 
 
+def getNamesMap(folder_path):
+    dirs = os.listdir(folder_path)
+
+    names = {}
+    count = 0
+
+    for dir in dirs:
+        names[count] = dir
+        count += 1
+
+    return names
 
 
 def main():
@@ -45,9 +56,8 @@ def main():
     # or use FisherFaceRecognizer by replacing above line with
     face_recog = cv2.face.createFisherFaceRecognizer()
     # face_recog = cv2.face.FisherFaceRecognizer_create()
-
+    folder_path = os.path.abspath('./training_sets')
     if args.train:
-        folder_path = os.path.abspath('./training_sets')
         print("Preparing data...")
         faces, labels, names = train_model.prepare_training_data(face_cascade, folder_path)
         print("Data prepared")
@@ -60,12 +70,7 @@ def main():
         face_recog = train_model.recognizer(faces, labels)
     else:
         face_recog.load('model.yaml')
-        names = {
-                0 : 'ryan',
-                1 : 'david',
-                2 : 'nic',
-                3 : 'andre'
-        }
+        names = getNamesMap(folder_path)
 
 
 
