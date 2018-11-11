@@ -115,7 +115,7 @@ def predict(face_cascade, test_img, face_recognizer, name_map):
 
     # predict the image using our face recognizer
     if face is None:
-        return None, None
+        return img
 
     label, conf = face_recognizer.predict(cv2.resize(face, (280, 280)))
     color = (0, 255, 0) if int(conf) < 350 else (0, 0, 255)
@@ -124,7 +124,7 @@ def predict(face_cascade, test_img, face_recognizer, name_map):
     # draw name of predicted person
     draw_text(img, name_map[label], rect[0], rect[1] - 5, color)
 
-    return img, conf
+    return img
 
 
 def main():

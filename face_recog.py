@@ -69,7 +69,7 @@ def main():
     vid = cv2.VideoCapture(0)
     while True:
         ret, frame = vid.read()
-        image, conf = train_model.predict(face_cascade, frame, face_recog, names)
+        image = train_model.predict(face_cascade, frame, face_recog, names)
 
         if image is not None:
             cv2.imshow("Faces found", image)
