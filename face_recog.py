@@ -44,6 +44,8 @@ def main():
 
     # or use FisherFaceRecognizer by replacing above line with
     face_recog = cv2.face.createFisherFaceRecognizer()
+    # face_recog = cv2.face.FisherFaceRecognizer_create()
+
     if args.train:
         folder_path = os.path.abspath('./training_sets')
         print("Preparing data...")
@@ -57,11 +59,12 @@ def main():
 
         face_recog = train_model.recognizer(faces, labels)
     else:
-        face_recog.load('model.xml')
+        face_recog.load('model.yaml')
         names = {
                 0 : 'ryan',
                 1 : 'david',
-                2 : 'andre'
+                2 : 'nic',
+                3 : 'andre'
         }
 
 

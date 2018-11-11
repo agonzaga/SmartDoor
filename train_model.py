@@ -28,13 +28,9 @@ def detect_face_trim(f_cascade, img):
 def prepare_training_data(face_cascade, folder_path):
     dirs = os.listdir(folder_path)
 
-<<<<<<< HEAD
-    trained_sets = {}
-=======
     faces = []
     labels = []
     names = {}
->>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
 
     count = 0
 
@@ -63,9 +59,6 @@ def prepare_training_data(face_cascade, folder_path):
             # display an image window to show the image
 
             if face is not None:
-<<<<<<< HEAD
-                trained_sets[label].append(face)
-=======
                 cv2.imshow("Training on image...", face)
                 cv2.waitKey(100)
 
@@ -77,14 +70,11 @@ def prepare_training_data(face_cascade, folder_path):
                 names[count] = label
         count += 1
 
->>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
     cv2.destroyAllWindows()
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
-<<<<<<< HEAD
-    return trained_sets
-=======
+
     return faces, labels, names
 
 
@@ -121,7 +111,6 @@ def predict(face_cascade, test_img, face_recognizer, name_map):
 
     # make a copy of the image as we don't want to change original image
     img = test_img.copy()
->>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
 
     # detect face from the image
     face, rect = detect_face_trim(face_cascade, img)
