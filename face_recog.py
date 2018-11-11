@@ -75,12 +75,22 @@ def main():
 
 
     vid = cv2.VideoCapture(0)
+    in_row_count = 0
     while True:
         ret, frame = vid.read()
-        image = train_model.predict(face_cascade, frame, face_recog, names)
+        image, conf, name = train_model.predict(face_cascade, frame, face_recog, names)
 
         if image is not None:
             cv2.imshow("Faces found", image)
+
+        if conf < 350:
+            in_row_count += 1
+        else:
+            in_row_count = 0
+
+        if in_row_count > 10:
+            print("Unlocked user %s!" % name)
+            in_row_count = 0
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

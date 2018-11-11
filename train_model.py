@@ -59,6 +59,7 @@ def prepare_training_data(face_cascade, folder_path):
 
             if face is not None:
                 cv2.imshow("Training on image...", face)
+                # print(image)
                 cv2.waitKey(100)
 
 
@@ -89,7 +90,7 @@ def recognizer(faces, labels):
     # face_recognizer = cv2.face.createFisherFaceRecognizer()
     face_recognizer = cv2.face.FisherFaceRecognizer_create()
 
-    print(labels)
+    print("Training...")
 
     # train our face recognizer of our training faces
     face_recognizer.train(faces, numpy.array(labels))
@@ -118,7 +119,7 @@ def predict(face_cascade, test_img, face_recognizer, name_map):
 
     # predict the image using our face recognizer
     if face is None:
-        return img
+        return img, 1000, "Unknown"
 
     label, conf = face_recognizer.predict(cv2.resize(face, (280, 280)))
     color = (0, 255, 0) if int(conf) < 350 else (0, 0, 255)
@@ -127,7 +128,7 @@ def predict(face_cascade, test_img, face_recognizer, name_map):
     # draw name of predicted person
     draw_text(img, name_map[label], rect[0], rect[1] - 5, color)
 
-    return img
+    return img, conf, name_map[label]
 
 
 def main():
