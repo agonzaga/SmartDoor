@@ -59,7 +59,10 @@ def close_db():
 if __name__ == '__main__':
     def main():
         open_db()
-        # create_table()
+        try:
+            create_table()
+        except:
+            pass
         readInFiles(sys.argv[1])
         populate_db(fileList)
         close_db()
@@ -68,4 +71,3 @@ if __name__ == '__main__':
         exit(error())
     else:
         main()
-
