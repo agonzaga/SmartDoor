@@ -90,7 +90,7 @@ def recognizer(faces, labels):
 
     # train our face recognizer of our training faces
     face_recognizer.train(faces, numpy.array(labels))
-    face_recognizer.save("model.xml")
+    face_recognizer.save("model.yaml")
     return face_recognizer
 
 
