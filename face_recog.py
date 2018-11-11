@@ -4,9 +4,13 @@ import os
 import numpy
 import train_model
 import argparse
+import get_photos
 
 parser = argparse.ArgumentParser(description='Facial recognition door unlocker.')
-parser.add_argument('-t', '--train', action='store_true', help="Retrains the facial recognizer on the images in training_set.")
+parser.add_argument('-t', '--train', action='store_true', help="Retrains the facial recognizer on the images in training_set. Saves trained model into model.yaml.")
+parser.add_argument('-m', '--model', type=str, default='model.yaml', help='Model file to read from.')
+parser.add_argument('-a', '--add', action='store_true', help='Add new user.')
+parser.add_argument('-n', '--num', type=int, default=250, help='Number of photos to take.')
 
 def detect_faces(f_cascade, colored_img, scaleFactor=1.1):
     # just making a copy of image passed, so that passed image is not changed
@@ -54,9 +58,11 @@ def main():
     # face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
     # or use FisherFaceRecognizer by replacing above line with
-    # face_recog = cv2.face.createFisherFaceRecognizer()
-    face_recog = cv2.face.FisherFaceRecognizer_create()
+    face_recog = cv2.face.createFisherFaceRecognizer()
+    # face_recog = cv2.face.FisherFaceRecognizer_create()
     folder_path = os.path.abspath('./training_sets')
+    if args.add:
+        get_photos.main(args.num)
     if args.train:
         print("Preparing data...")
         faces, labels, names = train_model.prepare_training_data(face_cascade, folder_path)
@@ -69,7 +75,7 @@ def main():
 
         face_recog = train_model.recognizer(faces, labels)
     else:
-        face_recog.load('model.yaml')
+        face_recog.load(args.model)
         names = getNamesMap(folder_path)
 
 

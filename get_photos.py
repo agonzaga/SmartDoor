@@ -17,7 +17,7 @@ def detect_faces(f_cascade, colored_img, scaleFactor=1.1):
     return len(faces)
 
 
-def main():
+def main(num=250):
     # casc_type = os.path.abspath('./data/lbpcascade_frontalface.xml')
     casc_type = os.path.abspath('./data/haarcascade_frontalface_default.xml')
     face_cascade = cv2.CascadeClassifier(casc_type)
@@ -36,7 +36,7 @@ def main():
     vid = cv2.VideoCapture(0)
     time.sleep(2)
     count = 0
-    while count < 40:
+    while count < num:
         ret, frame = vid.read()
         num_faces = detect_faces(face_cascade, frame)
 
