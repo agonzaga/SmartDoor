@@ -24,7 +24,7 @@ def get_db(db_name):
         if key in mydict:
             mydict[key].append(image_path)
         else:
-            mydict[key] = [image_path]
+            mydict[key] = image_path.split(' ')
 
     return mydict
 

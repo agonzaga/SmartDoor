@@ -48,7 +48,7 @@ def populate_db(file_dict):
     for k, v in file_dict.items():
         for paths in v:
             all_paths += paths + " "
-        insert(k, all_paths)
+        insert(k, all_paths[:-1])
         all_paths = ""
 
 def close_db():
