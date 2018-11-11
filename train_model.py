@@ -64,7 +64,7 @@ def prepare_training_data(face_cascade, folder_path):
 
 
             if face is not None:
-                faces.append(face)
+                faces.append(cv2.resize(face, (280, 280)))
                 labels.append(count)
                 names[count] = label
         count += 1
@@ -77,32 +77,34 @@ def prepare_training_data(face_cascade, folder_path):
 
 
 def recognizer(faces, labels):
-    face_recognizer = cv2.face.createLBPHFaceRecognizer()
+    # face_recognizer = cv2.face.createLBPHFaceRecognizer()
     # face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 
     # or use EigenFaceRecognizer by replacing above line with
+    # face_recognizer = cv2.face.createEigenFaceRecognizer()
     # face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
     # or use FisherFaceRecognizer by replacing above line with
-    # face_recognizer = cv2.face.createFisherFaceRecognizer()
+    face_recognizer = cv2.face.createFisherFaceRecognizer()
     print(labels)
 
     # train our face recognizer of our training faces
     face_recognizer.train(faces, numpy.array(labels))
+    face_recognizer.save("model.xml")
     return face_recognizer
 
 
 def predict(face_cascade, test_img, face_recognizer, name_map):
     # according to given (x, y) coordinates and
     # given width and height
-    def draw_rectangle(img, rect):
+    def draw_rectangle(img, rect, color):
         (x, y, w, h) = rect
-        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
 
     # function to draw text on give image starting from
     # passed (x, y) coordinates.
-    def draw_text(img, text, x, y):
-        cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+    def draw_text(img, text, x, y, color):
+        cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, color, 2)
 
 
     # make a copy of the image as we don't want to change original image
@@ -113,16 +115,16 @@ def predict(face_cascade, test_img, face_recognizer, name_map):
 
     # predict the image using our face recognizer
     if face is None:
-        return img
+        return None, None
 
-    label, conf = face_recognizer.predict(face)
-    print(conf)
+    label, conf = face_recognizer.predict(cv2.resize(face, (280, 280)))
+    color = (0, 255, 0) if int(conf) < 350 else (0, 0, 255)
     # draw a rectangle around face detected
-    draw_rectangle(img, rect)
+    draw_rectangle(img, rect, color)
     # draw name of predicted person
-    draw_text(img, name_map[label], rect[0], rect[1] - 5)
+    draw_text(img, name_map[label], rect[0], rect[1] - 5, color)
 
-    return img
+    return img, conf
 
 
 def main():
