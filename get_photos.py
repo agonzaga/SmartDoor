@@ -36,7 +36,7 @@ def main():
     vid = cv2.VideoCapture(0)
     time.sleep(2)
     count = 0
-    while count < 250:
+    while count < 40:
         ret, frame = vid.read()
         num_faces = detect_faces(face_cascade, frame)
 
