@@ -54,8 +54,8 @@ def main():
     # face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
     # or use FisherFaceRecognizer by replacing above line with
-    face_recog = cv2.face.createFisherFaceRecognizer()
-    # face_recog = cv2.face.FisherFaceRecognizer_create()
+    # face_recog = cv2.face.createFisherFaceRecognizer()
+    face_recog = cv2.face.FisherFaceRecognizer_create()
     folder_path = os.path.abspath('./training_sets')
     if args.train:
         print("Preparing data...")

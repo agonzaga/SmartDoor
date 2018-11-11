@@ -36,7 +36,6 @@ def prepare_training_data(face_cascade, folder_path):
 
     for dir in dirs:
         label = dir
-        trained_sets[label] = []
         subdir_path = folder_path + "/" + dir
         if label == ".DS_Store":
             continue
@@ -87,7 +86,9 @@ def recognizer(faces, labels):
     # face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
     # or use FisherFaceRecognizer by replacing above line with
-    face_recognizer = cv2.face.createFisherFaceRecognizer()
+    # face_recognizer = cv2.face.createFisherFaceRecognizer()
+    face_recognizer = cv2.face.FisherFaceRecognizer_create()
+
     print(labels)
 
     # train our face recognizer of our training faces
