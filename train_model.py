@@ -25,20 +25,25 @@ def detect_face_trim(f_cascade, img):
     return gray[y:y + w, x:x + h], faces[0]
 
 
-def prepare_training_data(folder_path):
+def prepare_training_data(face_cascade, folder_path):
     dirs = os.listdir(folder_path)
 
+<<<<<<< HEAD
     trained_sets = {}
+=======
+    faces = []
+    labels = []
+    names = {}
+>>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
 
-    casc_type = os.path.abspath('./data/lbpcascade_frontalface.xml')
-    # casc_type = os.path.abspath('./data/haarcascade_frontalface_default.xml')
-
-    face_cascade = cv2.CascadeClassifier(casc_type)
+    count = 0
 
     for dir in dirs:
         label = dir
         trained_sets[label] = []
         subdir_path = folder_path + "/" + dir
+        if label == ".DS_Store":
+            continue
 
         subdirs = os.listdir(subdir_path)
 
@@ -53,21 +58,86 @@ def prepare_training_data(folder_path):
             if img is None:
                 continue
 
-            # display an image window to show the image
-            cv2.imshow("Training on image...", img)
-            cv2.waitKey(100)
-
             # detect face
             face, rect = detect_face_trim(face_cascade, img)
+            # display an image window to show the image
 
             if face is not None:
+<<<<<<< HEAD
                 trained_sets[label].append(face)
+=======
+                cv2.imshow("Training on image...", face)
+                cv2.waitKey(100)
+
+
+
+            if face is not None:
+                faces.append(cv2.resize(face, (280, 280)))
+                labels.append(count)
+                names[count] = label
+        count += 1
+
+>>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
     cv2.destroyAllWindows()
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
+<<<<<<< HEAD
     return trained_sets
+=======
+    return faces, labels, names
 
+
+def recognizer(faces, labels):
+    # face_recognizer = cv2.face.createLBPHFaceRecognizer()
+    # face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+
+    # or use EigenFaceRecognizer by replacing above line with
+    # face_recognizer = cv2.face.createEigenFaceRecognizer()
+    # face_recognizer = cv2.face.EigenFaceRecognizer_create()
+
+    # or use FisherFaceRecognizer by replacing above line with
+    face_recognizer = cv2.face.createFisherFaceRecognizer()
+    print(labels)
+
+    # train our face recognizer of our training faces
+    face_recognizer.train(faces, numpy.array(labels))
+    face_recognizer.save("model.xml")
+    return face_recognizer
+
+
+def predict(face_cascade, test_img, face_recognizer, name_map):
+    # according to given (x, y) coordinates and
+    # given width and height
+    def draw_rectangle(img, rect, color):
+        (x, y, w, h) = rect
+        cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
+
+    # function to draw text on give image starting from
+    # passed (x, y) coordinates.
+    def draw_text(img, text, x, y, color):
+        cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, color, 2)
+
+
+    # make a copy of the image as we don't want to change original image
+    img = test_img.copy()
+>>>>>>> fcb6222e1cc16960d9ecc0360854f7dc16b5f37c
+
+    # detect face from the image
+    face, rect = detect_face_trim(face_cascade, img)
+
+    # predict the image using our face recognizer
+    if face is None:
+        return img
+
+    label, conf = face_recognizer.predict(cv2.resize(face, (280, 280)))
+    color = (0, 255, 0) if int(conf) < 350 else (0, 0, 255)
+    # draw a rectangle around face detected
+    draw_rectangle(img, rect, color)
+    # draw name of predicted person
+    draw_text(img, name_map[label], rect[0], rect[1] - 5, color)
+
+    return img
 
 
 def main():
@@ -80,5 +150,10 @@ def main():
     for label, faces in trained_set.items():
         print('{0}: {1}'.format(label, len(faces)))
 
+    face_recog = recognizer(faces, labels)
+    #predict(test_img, face_recog)
+
 if __name__ == '__main__':
     main()
+
+
