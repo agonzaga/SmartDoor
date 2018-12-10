@@ -52,6 +52,7 @@ class MainWindow(Frame):
 	Once connection is made, pass variables from GUI widgets into shell command
 	"""
 	# TODO handle spaces in name
+        # TODO sanitize input (basic security)
 	def add_user(self):
 		user_name = self.name.get()
 		ssh_passwd = self.passwd.get()
