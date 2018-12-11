@@ -7,14 +7,8 @@ def initialize(name):
 	UDP_IP = "155.41.64.232"
 	UDP_PORT = 5005
 	buf = 1024
-	#file_name = sys.argv[1].encode()
-
 
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	#sock.sendto(file_name, (UDP_IP, UDP_PORT))
-	#print("Sending" + file_name.decode() + "...")
-
-	
 
 	for filename in os.listdir("training_sets/" + name):
 		if filename.endswith(".jpg"):
