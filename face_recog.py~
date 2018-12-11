@@ -9,7 +9,7 @@ import get_photos
 parser = argparse.ArgumentParser(description='Facial recognition door unlocker.')
 parser.add_argument('-t', '--train', action='store_true', help="Retrains the facial recognizer on the images in training_set. Saves trained model into model.yaml.")
 parser.add_argument('-m', '--model', type=str, default='model.yaml', help='Model file to read from.')
-parser.add_argument('-a', '--add',  type=str, default='none', help='Add new user.')
+parser.add_argument('-a', '--add',  type=str, default='none', 	help='Add new user.')
 parser.add_argument('-n', '--num', type=int, default=250, help='Number of photos to take.')
 
 def detect_faces(f_cascade, colored_img, scaleFactor=1.1):
