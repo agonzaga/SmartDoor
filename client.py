@@ -3,7 +3,7 @@ from tkinter.ttk import *
 import tkinter.ttk as ttk
 import paramiko
 
-DEVICE_IP = "155.41.93.194"
+DEVICE_IP = "168.122.3.107"
 
 def client():
 	global root
@@ -31,18 +31,23 @@ class MainWindow(Frame):
 		self.file_label.grid(row=4, column=0, sticky=E, pady=7)
 
 		# enter name
-		self.name_label = Label(self, text='Enter User Name', style='Data.TLabel').grid(row=5, column=1, sticky=W, pady=7)
+		self.name_label = Label(self, text='Enter Name', style='Data.TLabel').grid(row=5, column=1, sticky=W, pady=7)
 		self.name = Entry(self)
 		self.name.grid(row=5, column=2, sticky=N, pady=7)
 
+		# enter email
+		self.email_label = Label(self, text='Enter Email', style='Data.TLabel').grid(row=6, column=1, sticky=W, pady=7)
+		self.email = Entry(self)
+		self.email.grid(row=6, column=2, sticky=N, pady=7)
+
 		# enter password
-		self.passwd_label = Label(self, text='Enter Server Password', style='Data.TLabel').grid(row=6, column=1, sticky=W, pady=7)
+		self.passwd_label = Label(self, text='Enter Password', style='Data.TLabel').grid(row=7, column=1, sticky=W, pady=7)
 		self.passwd = Entry(self, show="*")
-		self.passwd.grid(row=6, column=2, sticky=N, pady=7)
+		self.passwd.grid(row=7, column=2, sticky=N, pady=7)
 
 		# submit button
 		self.train = Button(self, text='Add User', width=10, command=lambda:self.add_user())
-		self.train.grid(row=7, column=1, sticky=N, pady=7)
+		self.train.grid(row=8, column=1, sticky=N, pady=7)
 
 		Grid.rowconfigure(self, 0, weight=1)
 		Grid.columnconfigure(self, 1, weight=1)
@@ -55,7 +60,9 @@ class MainWindow(Frame):
         # TODO sanitize input (basic security)
 	def add_user(self):
 		user_name = self.name.get()
+		user_email = self.email.get()
 		ssh_passwd = self.passwd.get()
+
 
 		ssh_client = paramiko.SSHClient()
 		ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
@@ -65,7 +72,7 @@ class MainWindow(Frame):
 		except:
 			print("wrong password\n")
 
-		for command in 'cd Documents/SmartDoor && python test_ssh.py {}'.format(user_name), 'uname', 'uptime':
+		for command in 'cd Desktop/SmartDoor && ls && python3 control.py {} {}'.format(user_name, user_email), 'uname', 'uptime':
 			stdin, stdout, stderr = ssh_client.exec_command(command)
 			stdin.close()
 			print(repr(stdout.read()))

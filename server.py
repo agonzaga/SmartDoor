@@ -1,7 +1,9 @@
 import socket
 import select
+import os
 
-UDP_IP = "127.0.0.1"
+
+UDP_IP = "155.41.64.232"
 IN_PORT = 5005
 timeout = 3
 
@@ -14,10 +16,14 @@ print("Running UDP server on {}:{}".format(UDP_IP, IN_PORT))
 while True:
     data, addr = sock.recvfrom(1024)
     if data:
-        print("Recieved file:" + data.decode())
         file_name = data.strip()
 
-    f = open(file_name, 'wb')
+    try:
+    	os.system("mkdir training_sets/" + file_name.decode()[:-5])
+    except:
+    	pass
+
+    f = open("training_sets/" + file_name.decode()[:-5] + '/' + file_name.decode(), 'wb')
 
     while True:
         ready = select.select([sock], [], [], timeout)
@@ -28,3 +34,4 @@ while True:
             print("Downloaded " + file_name.decode())
             f.close()
             break
+
