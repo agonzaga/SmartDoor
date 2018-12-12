@@ -1,7 +1,8 @@
 import socket
 import select
 import os
-
+import train
+import time
 
 UDP_IP = "155.41.64.232"
 IN_PORT = 5005
@@ -33,5 +34,7 @@ while True:
         else:
             print("Downloaded " + file_name.decode())
             f.close()
+            time.sleep(5)
             break
+    train.main()
 
